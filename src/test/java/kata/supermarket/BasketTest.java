@@ -1,6 +1,7 @@
 package kata.supermarket;
 
 import kata.supermarket.discount.BuyOneGetOneDiscount;
+import kata.supermarket.discount.BuyOneKileForHalfPriceDiscount;
 import kata.supermarket.discount.BuyTwoForOnePoundDiscount;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -86,6 +87,16 @@ class BasketTest {
 
 
         assertEquals(new BigDecimal("1.00"), basket.total(new BuyTwoForOnePoundDiscount()));
+    }
+
+    @Test
+    void basketProvidesTotalValue_aSingleItemPricedByWeight_buyOneKileForHalfPrice() {
+        final Basket basket = new Basket();
+
+        Iterable<Item> items = Arrays.asList(aKiloOfAmericanSweets().weighing(new BigDecimal("1.0")));
+        items.forEach(basket::add);
+
+        assertEquals(new BigDecimal("2.495"), basket.total(new BuyOneKileForHalfPriceDiscount()));
     }
 
     private static Arguments aSingleItemPricedByWeight() {
