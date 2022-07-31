@@ -1,5 +1,6 @@
 package kata.supermarket;
 
+import kata.supermarket.discount.BuyOneGetOneDiscount;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -43,6 +44,36 @@ class BasketTest {
 
 
         assertEquals(new BigDecimal("3.10"), basket.total());
+    }
+
+    @Test
+    void basketProvidesTotalValue_multipleItemsSingleProductPricedPerUnit_BuyOneGetOneDiscount() {
+        final Basket basket = new Basket();
+
+        Iterable<Item> items = Arrays.asList(aPackOfDigestives(), aPackOfDigestives());
+        items.forEach(basket::add);
+
+
+        assertEquals(new BigDecimal("1.55"), basket.total(new BuyOneGetOneDiscount()));
+    }
+
+    @Test
+    void basketProvidesTotalValue_multipleItemsMultipleProductPricedPerUnit_BuyOneGetOneDiscount() {
+        final Basket basket = new Basket();
+
+        Iterable<Item> items = Arrays.asList(aPackOfDigestives(),
+                aPackOfDigestives(),
+                aPackOfDigestives(),
+                aPackOfDigestives(),
+                aPackOfDigestives(),
+                aPackOfChickenNugets(),
+                aPackOfChickenNugets(),
+                aPackOfChickenNugets(),
+                aBoxOfCereal());
+        items.forEach(basket::add);
+
+
+        assertEquals(new BigDecimal("10.85"), basket.total(new BuyOneGetOneDiscount()));
     }
 
     private static Arguments aSingleItemPricedByWeight() {
@@ -90,5 +121,13 @@ class BasketTest {
 
     private static Item twoHundredGramsOfPickAndMix() {
         return aKiloOfPickAndMix().weighing(new BigDecimal(".2"));
+    }
+
+    private static Item aPackOfChickenNugets() {
+        return new Product(new BigDecimal("2.55")).oneOf();
+    }
+
+    private static Item aBoxOfCereal() {
+        return new Product(new BigDecimal("1.10")).oneOf();
     }
 }
